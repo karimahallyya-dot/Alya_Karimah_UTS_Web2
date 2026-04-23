@@ -1,154 +1,213 @@
-// 1. Kita cari dulu "kotak kosong" di HTML
-const productList = document.getElementById('product-list');
-
-// 2. Karena browser memblokir baca file dari luar, kita taruh data dummy JSON-nya langsung di sini
+// ==========================================
+// DATA GLOBAL & SESI
+// ==========================================
 const products = [
-  {
-    "id": 1,
-    "name": "Kaos Sablon DTF Custom",
-    "price": 85000,
-    "image": "https://via.placeholder.com/300x200?text=Kaos+DTF",
-    "description": "Kaos bahan katun dengan sablon DTF desain bebas sesuai keinginan."
-  },
-  {
-    "id": 2,
-    "name": "Kabel Rem Depan Astrea",
-    "price": 35000,
-    "image": "https://via.placeholder.com/300x200?text=Kabel+Rem",
-    "description": "Kabel rem dengan kualitas terjamin untuk motor kesayangan."
-  },
-  {
-    "id": 3,
-    "name": "Jaket Hoodie Polos",
-    "price": 120000,
-    "image": "https://via.placeholder.com/300x200?text=Hoodie",
-    "description": "Hoodie tebal yang sangat cocok untuk dijadikan media sablon."
-  }
+    { id: 1, name: "Kaos Sablon DTF Custom", price: 85000, image: "images/kaos.jpg", description: "Bahan katun 30s, sablon DTF awet dan tajam." },
+    { id: 2, name: "Kabel Rem Depan Astrea", price: 35000, image: "images/sweeter.jpg", description: "Part ori untuk motor kesayangan." },
+    { id: 3, name: "Jaket Hoodie Polos", price: 120000, image: "images/jaket.jpg", description: "Bahan fleece tebal, cocok untuk sablon." },
+    { id: 4, name: "Topi Baseball Polos", price: 25000, image: "images/kemeja.jpg", description: "Warna solid, bahan kanvas rafel." }
 ];
 
-// 3. Tugas untuk menampilkan produk ke layar
-function loadProducts() {
-    // Bersihkan tulisan "Sedang memuat data produk..."
-    productList.innerHTML = '';
+const sessionInfo = localStorage.getItem('session_uts');
 
-    // Jejerkan barangnya
-    products.forEach(product => {
-        const productCard = `
-            <div class="bg-white border rounded-lg shadow-md p-4 flex flex-col hover:shadow-lg transition">
-                <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover rounded-md mb-4">
-                <h3 class="text-lg font-bold text-gray-800">${product.name}</h3>
-                <p class="text-sm text-gray-600 mb-4 flex-grow">${product.description}</p>
-                <div class="mt-auto">
-                    <p class="text-blue-600 font-bold text-xl mb-2">Rp ${product.price.toLocaleString('id-ID')}</p>
-                    <button class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition" onclick="tambahKeKeranjang(${product.id})">
-                        Tambah ke Keranjang
-                    </button>
-                </div>
-            </div>
-        `;
-        // Masukkan kartu ke HTML
-        productList.innerHTML += productCard;
-    });
+// Fungsi Global untuk Update Navbar
+function updateNavbarGlobal() {
+    if (sessionInfo && document.getElementById('userGreeting')) {
+        document.getElementById('userGreeting').innerText = "Halo, " + sessionInfo.split('@')[0];
+        document.getElementById('userGreeting').classList.remove('hidden');
+        if(document.getElementById('btnLogin')) document.getElementById('btnLogin').classList.add('hidden');
+        if(document.getElementById('btnLogout')) document.getElementById('btnLogout').classList.remove('hidden');
+    }
+    const cart = JSON.parse(localStorage.getItem('cart_uts')) || [];
+    if(document.getElementById('cart-count')) {
+        document.getElementById('cart-count').innerText = cart.reduce((sum, item) => sum + item.qty, 0);
+    }
 }
 
-// 4. Perintahkan untuk langsung tampil!
-loadProducts();
-// ==========================================
-// LANGKAH 3: LOGIKA KERANJANG & LOCALSTORAGE
-// ==========================================
-
-// Fungsi untuk mengambil keranjang dari saku (LocalStorage)
-function getCart() {
-    // Cek apakah ada data bernama 'cart_uts' di memori browser
-    const cart = localStorage.getItem('cart_uts');
-    // Jika ada, ubah teks menjadi bentuk data. Jika tidak ada, buat keranjang kosong [].
-    return cart ? JSON.parse(cart) : [];
+window.logout = function() {
+    localStorage.removeItem('session_uts');
+    window.location.href = 'index.html';
 }
 
-// Fungsi ini dipanggil saat tombol "Tambah ke Keranjang" diklik
-function tambahKeKeranjang(idProduk) {
-    // 1. Cari produk dari daftar barang berdasarkan ID-nya
-    const produkYangDipilih = products.find(p => p.id === idProduk);
-    
-    // 2. Ambil keranjang yang sudah ada saat ini
-    let cart = getCart();
-
-    // 3. Masukkan barang yang diklik ke dalam keranjang
-    cart.push(produkYangDipilih);
-
-    // 4. Simpan kembali keranjang yang sudah terisi ke LocalStorage
-    // Harus diubah jadi teks (JSON.stringify) karena LocalStorage cuma menerima teks
-    localStorage.setItem('cart_uts', JSON.stringify(cart));
-
-    // 5. Perbarui angka di pojok kanan atas layar
-    updateCartCount();
-
-    // 6. Beri notifikasi sederhana ke pembeli
-    alert(produkYangDipilih.name + " berhasil masuk keranjang!");
-}
-
-// Fungsi untuk memperbarui angka keranjang di Navbar (Pojok Kanan Atas)
-function updateCartCount() {
-    const cart = getCart();
-    // Cari elemen dengan ID 'cart-count' di HTML, lalu ganti teksnya dengan jumlah barang
-    document.getElementById('cart-count').innerText = cart.length;
-}
-
-// Jalankan fungsi ini saat web pertama kali dibuka, 
-// supaya angka keranjang tidak kembali ke 0 jika sebelumnya sudah ada belanjaan.
-updateCartCount();
 // ==========================================
-// LANGKAH 4: LOGIKA CHECKOUT & RIWAYAT ORDER
+// 1. LOGIKA HALAMAN LOGIN
 // ==========================================
+if (document.getElementById('authSection')) {
+    if (sessionInfo) window.location.href = 'index.html'; // Tolak akses jika sudah login
 
-function prosesCheckout() {
-    // 1. Cek dulu apakah keranjang ada isinya
-    const cart = getCart();
-    if (cart.length === 0) {
-        alert("Keranjang masih kosong! Silakan tambah produk dulu.");
-        return; // Hentikan proses kalau kosong
+    let isLoginMode = true;
+    window.switchAuthMode = function() {
+        isLoginMode = !isLoginMode;
+        document.getElementById('authTitle').innerText = isLoginMode ? "Login Akun" : "Daftar Akun Baru";
+        document.getElementById('btnSubmitAuth').innerText = isLoginMode ? "Masuk" : "Daftar Sekarang";
+        document.querySelector('#authSection p span').innerText = isLoginMode ? "Daftar di sini" : "Login di sini";
+        document.querySelector('#authSection p').childNodes[0].nodeValue = isLoginMode ? "Belum punya akun? " : "Sudah punya akun? ";
     }
 
-    // 2. Ambil data yang diketik user di form
-    const nama = document.getElementById('nama').value;
-    const nohp = document.getElementById('nohp').value;
-    const alamat = document.getElementById('alamat').value;
+    window.prosesAuth = function() {
+        const email = document.getElementById('emailAuth').value;
+        const pass = document.getElementById('passAuth').value;
+        if(!email || pass.length < 6) return alert("Email wajib diisi dan Password minimal 6 karakter!");
 
-    // 3. Pastikan tidak ada kolom yang kosong
-    if (!nama || !nohp || !alamat) {
-        alert("Harap isi Nama, No HP, dan Alamat dengan lengkap!");
-        return;
+        let users = JSON.parse(localStorage.getItem('users_uts')) || [];
+        if(!isLoginMode) {
+            if(users.find(u => u.email === email)) return alert("Email sudah terdaftar!");
+            users.push({ email, pass });
+            localStorage.setItem('users_uts', JSON.stringify(users));
+            alert("Daftar sukses! Silakan login.");
+            switchAuthMode();
+        } else {
+            if(!users.find(u => u.email === email && u.pass === pass)) return alert("Data salah!");
+            localStorage.setItem('session_uts', email);
+            window.location.href = 'index.html'; 
+        }
+    }
+}
+
+// ==========================================
+// 2. LOGIKA HALAMAN UTAMA (INDEX)
+// ==========================================
+if (document.getElementById('index-page')) {
+    updateNavbarGlobal();
+    tampilkanProduk(products);
+    renderHistory();
+
+    function tampilkanProduk(dataProduk) {
+        const list = document.getElementById('product-list');
+        list.innerHTML = '';
+        dataProduk.forEach(p => {
+            list.innerHTML += `
+                <div class="bg-white rounded-2xl shadow hover:shadow-xl transition flex flex-col border overflow-hidden">
+                    <img src="${p.image}" class="w-full h-48 object-cover">
+                    <div class="p-5 flex flex-col flex-grow">
+                        <h3 class="font-bold mb-2">${p.name}</h3>
+                        <div class="flex justify-between mt-auto items-center">
+                            <span class="text-indigo-600 font-bold">Rp ${p.price.toLocaleString('id-ID')}</span>
+                            <button onclick="tambahKeKeranjang(${p.id})" class="bg-indigo-100 text-indigo-700 p-2 rounded-full hover:bg-indigo-600 hover:text-white transition">
+                                Tambah
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+        });
     }
 
-    // 4. Buat ID Transaksi acak sesuai syarat UTS (contoh: TRX-84729)
-    const idTransaksi = "TRX-" + Math.floor(Math.random() * 100000);
+    window.cariProduk = function() {
+        const keyword = document.getElementById('searchInput').value.toLowerCase();
+        tampilkanProduk(products.filter(p => p.name.toLowerCase().includes(keyword)));
+    }
 
-    // 5. Bungkus semua data order menjadi satu
-    const orderData = {
-        id: idTransaksi,
-        namaPemesan: nama,
-        hp: nohp,
-        alamat: alamat,
-        barangBawaan: cart,
-        waktuOrder: new Date().toLocaleString() // Catat waktu saat ini
-    };
+    window.tambahKeKeranjang = function(id) {
+        if (!sessionInfo) return window.location.href = 'login.html'; // Arahkan ke login jika belum
+        
+        let cart = JSON.parse(localStorage.getItem('cart_uts')) || [];
+        const produk = products.find(p => p.id === id);
+        const existing = cart.find(i => i.id === id);
+        
+        if(existing) existing.qty += 1;
+        else cart.push({ ...produk, qty: 1 });
+        
+        localStorage.setItem('cart_uts', JSON.stringify(cart));
+        updateNavbarGlobal();
+        alert(produk.name + " masuk keranjang!");
+    }
 
-    // 6. Simpan pesanan ke 'Buku Riwayat' di LocalStorage
-    let orders = localStorage.getItem('orders_uts');
-    orders = orders ? JSON.parse(orders) : []; // Kalau belum ada riwayat, buat array kosong
+    function renderHistory() {
+        const history = JSON.parse(localStorage.getItem('history_uts')) || [];
+        const list = document.getElementById('history-list');
+        const userHistory = history.filter(h => h.user === sessionInfo);
+        
+        if(!sessionInfo || userHistory.length === 0) return list.innerHTML = '<p class="text-gray-400 italic">Belum ada riwayat transaksi.</p>';
+        list.innerHTML = userHistory.map(h => `
+            <div class="border rounded p-4 mb-3 flex justify-between bg-gray-50">
+                <div><p class="font-bold">${h.id}</p><p class="text-sm">Penerima: ${h.nama}</p></div>
+                <div class="text-right"><p class="text-amber-500 font-bold">${h.total}</p></div>
+            </div>`).join('');
+    }
+}
+
+// ==========================================
+// 3. LOGIKA HALAMAN KERANJANG (CART)
+// ==========================================
+if (document.getElementById('cart-page')) {
+    if (!sessionInfo) window.location.href = 'login.html'; // Keamanan Halaman
+    updateNavbarGlobal();
+    renderCartDetail();
+
+    window.updateQtyDetail = function(id, change) {
+        let cart = JSON.parse(localStorage.getItem('cart_uts')) || [];
+        const item = cart.find(i => i.id === id);
+        if(item) {
+            item.qty += change;
+            if(item.qty <= 0) cart = cart.filter(i => i.id !== id);
+            localStorage.setItem('cart_uts', JSON.stringify(cart));
+            renderCartDetail();
+        }
+    }
+
+    function renderCartDetail() {
+        const cart = JSON.parse(localStorage.getItem('cart_uts')) || [];
+        const container = document.getElementById('cart-items-detail');
+        let total = 0;
+
+        if(cart.length === 0) {
+            container.innerHTML = '<p class="text-center py-10 text-gray-500">Keranjang masih kosong.</p>';
+            document.getElementById('cart-total-detail').innerText = "Rp 0";
+            document.getElementById('btnToCheckout').classList.add('opacity-50', 'pointer-events-none');
+            return;
+        }
+
+        document.getElementById('btnToCheckout').classList.remove('opacity-50', 'pointer-events-none');
+        container.innerHTML = cart.map(item => {
+            total += item.price * item.qty;
+            return `
+                <div class="flex items-center justify-between bg-gray-50 p-4 rounded-xl border">
+                    <div class="w-1/2">
+                        <p class="font-bold text-lg line-clamp-1">${item.name}</p>
+                        <p class="text-indigo-600">Rp ${item.price.toLocaleString('id-ID')}</p>
+                    </div>
+                    <div class="flex items-center gap-3 bg-white border rounded-lg px-3 py-1">
+                        <button onclick="updateQtyDetail(${item.id}, -1)" class="text-xl text-red-500 font-bold px-2 hover:bg-gray-100 rounded">-</button>
+                        <span class="font-bold w-6 text-center">${item.qty}</span>
+                        <button onclick="updateQtyDetail(${item.id}, 1)" class="text-xl text-green-500 font-bold px-2 hover:bg-gray-100 rounded">+</button>
+                    </div>
+                </div>`;
+        }).join('');
+        document.getElementById('cart-total-detail').innerText = "Rp " + total.toLocaleString('id-ID');
+    }
+}
+
+// ==========================================
+// 4. LOGIKA HALAMAN CHECKOUT
+// ==========================================
+if (document.getElementById('checkout-page')) {
+    if (!sessionInfo) window.location.href = 'login.html'; // Keamanan Halaman
     
-    orders.push(orderData); // Masukkan pesanan baru ke riwayat
-    localStorage.setItem('orders_uts', JSON.stringify(orders)); // Simpan kembali
+    const cart = JSON.parse(localStorage.getItem('cart_uts')) || [];
+    if (cart.length === 0) window.location.href = 'index.html'; // Tolak jika keranjang kosong
 
-    // 7. Setelah sukses, kosongkan keranjang!
-    localStorage.removeItem('cart_uts');
-    updateCartCount(); // Update angka di pojok kanan atas jadi 0 lagi
+    // Tampilkan Total Pembayaran
+    const totalSemua = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+    const totalTeks = "Rp " + totalSemua.toLocaleString('id-ID');
+    document.getElementById('checkout-total-display').innerText = totalTeks;
 
-    // 8. Kosongkan isian form biar rapi
-    document.getElementById('nama').value = '';
-    document.getElementById('nohp').value = '';
-    document.getElementById('alamat').value = '';
+    window.prosesCheckoutFinal = function() {
+        const nama = document.getElementById('nama').value;
+        const nohp = document.getElementById('nohp').value;
+        const alamat = document.getElementById('alamat').value;
 
-    // 9. Beri tahu user kalau sukses
-    alert("Hore! Pesanan " + idTransaksi + " berhasil dibuat. Terima kasih, " + nama + "!");
+        if(!nama || !nohp || !alamat) return alert("Mohon lengkapi semua data formulir!");
+
+        const idTrx = "TRX-" + Math.floor(Math.random() * 900000 + 100000);
+        const orderData = { id: idTrx, user: sessionInfo, nama, nohp, alamat, total: totalTeks, tanggal: new Date().toLocaleString() };
+
+        let history = JSON.parse(localStorage.getItem('history_uts')) || [];
+        history.unshift(orderData);
+        localStorage.setItem('history_uts', JSON.stringify(history));
+        
+        localStorage.removeItem('cart_uts'); // Kosongkan keranjang
+        
+        alert("Sukses! Pesanan " + idTrx + " berhasil dibuat. Anda akan dialihkan ke halaman utama.");
+        window.location.href = 'index.html'; // Alihkan kembali ke toko
+    }
 }
