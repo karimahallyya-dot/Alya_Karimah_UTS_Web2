@@ -3,48 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Shop Saya</title>
-    
+    <title>Toko Mantap - Beranda Mewah</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(145deg, #fdfbf7 0%, #f3f0ea 100%); position: relative; }
+        body::before {
+            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+            background-size: 28px 28px; pointer-events: none; z-index: 0;
+        }
+        .container { position: relative; z-index: 1; }
+        nav {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.98) 0%, rgba(67, 56, 202, 0.98) 100%);
+            backdrop-filter: blur(2px); box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        .product-card {
+            background: rgba(255, 255, 255, 0.96); border-radius: 28px;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.01);
+            overflow: hidden; position: relative; cursor: pointer;
+            animation: floatSoft 4s ease-in-out infinite;
+            animation-delay: calc(var(--delay, 0) * 0.15s);
+        }
+        @keyframes floatSoft { 0% { transform: translateY(0px); } 50% { transform: translateY(-6px); } 100% { transform: translateY(0px); } }
+        .product-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 30px 45px -15px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(99, 102, 241, 0.3);
+            animation-play-state: paused;
+        }
+        .product-card::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(90deg, #fbbf24, #f59e0b, #fbbf24);
+            transform: scaleX(0); transition: transform 0.4s ease; transform-origin: left;
+        }
+        .product-card:hover::after { transform: scaleX(1); }
+        .discount-badge {
+            position: absolute; top: 16px; right: 16px; background: linear-gradient(135deg, #f59e0b, #d97706);
+            padding: 6px 12px; border-radius: 40px; font-weight: 800; font-size: 0.75rem;
+            color: white; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3); z-index: 2; letter-spacing: 0.5px;
+        }
+        .price-original { text-decoration: line-through; font-size: 0.8rem; color: #9ca3af; margin-right: 8px; }
+        .price-special { color: #d97706; font-weight: 800; font-size: 1.25rem; }
+        .btn-cart-luxury { background: linear-gradient(100deg, #4f46e5, #6366f1); border: none; transition: all 0.2s ease; box-shadow: 0 4px 8px rgba(79, 70, 229, 0.2); }
+        .btn-cart-luxury:hover { background: linear-gradient(100deg, #6366f1, #818cf8); transform: scale(1.02); box-shadow: 0 8px 18px rgba(79, 70, 229, 0.3); }
+        .search-glass { background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.3); transition: all 0.2s; }
+        .search-glass:focus { background: rgba(255, 255, 255, 0.9); border-color: #fbbf24; box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2); }
+        .history-card { background: white; border-radius: 28px; transition: all 0.2s; border-left: 5px solid #4f46e5; }
+        .history-card:hover { transform: translateX(6px); box-shadow: 0 12px 20px -12px rgba(0, 0, 0, 0.15); }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #e5e7eb; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #4f46e5, #818cf8); border-radius: 10px; }
+    </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans">
+<body class="text-gray-800">
 
-    <header class="bg-blue-600 text-white p-4 shadow-md sticky top-0">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-2xl font-bold tracking-wider">Toko Mantap</h1>
-            <div class="flex gap-4">
-                <button class="bg-blue-800 px-4 py-2 rounded hover:bg-blue-700">Login</button>
-                <button class="bg-orange-500 px-4 py-2 rounded hover:bg-orange-400 font-bold">
-                    Keranjang (<span id="cart-count">0</span>)
-                </button>
+    <nav class="text-white shadow-xl sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-4">
+            <a href="index.html" class="text-2xl font-extrabold tracking-wide flex items-center gap-2">
+                <i class="fas fa-gem text-amber-300"></i>
+                <span>Toko<span class="text-amber-300">Mantap</span></span>
+            </a>
+            
+            <div class="w-full md:w-1/3 relative">
+                <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-indigo-300 text-sm"></i>
+                <input type="text" id="searchInput" onkeyup="cariProduk()" placeholder="Cari koleksi eksklusif..." class="search-glass w-full px-10 py-2 rounded-full text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-400/60">
+            </div>
+
+            <div class="flex gap-3 items-center">
+                <span id="userGreeting" class="hidden text-sm font-semibold border-r border-indigo-300 pr-3 items-center gap-1"><i class="fas fa-crown text-amber-300 text-xs"></i> <span id="greetingText"></span></span>
+                <a href="login.html" id="btnLogin" class="bg-white/20 backdrop-blur-sm px-5 py-2 rounded-full hover:bg-white/30 transition-all duration-200 font-semibold text-sm border border-white/30 flex items-center gap-2"><i class="fas fa-key"></i> Login</a>
+                <button id="btnLogout" onclick="logout()" class="hidden bg-red-500/90 backdrop-blur-sm px-4 py-2 rounded-full hover:bg-red-600 transition font-semibold text-sm flex items-center gap-2"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                <a href="cart.html" class="bg-gradient-to-r from-amber-500 to-amber-600 text-indigo-900 px-5 py-2 rounded-full hover:from-amber-400 hover:to-amber-500 transition-all font-bold text-sm shadow-lg flex items-center gap-2">
+                    <i class="fas fa-shopping-bag"></i> <span id="cart-count" class="bg-white px-2 py-0.5 rounded-full text-xs font-black text-indigo-700">0</span>
+                </a>
             </div>
         </div>
-    </header>
+    </nav>
 
-    <main class="container mx-auto mt-8 p-4">
-        <h2 class="text-xl font-bold mb-6 border-b-2 border-blue-600 pb-2 inline-block">Produk Terbaru</h2>
+    <main id="index-page" class="container mx-auto px-4 mt-10 mb-16">
+        <div class="mb-8 text-center md:text-left">
+            <div class="inline-block bg-white/60 backdrop-blur-sm rounded-full px-5 py-1 shadow-sm mb-3">
+                <span class="text-indigo-700 text-sm font-semibold"><i class="fas fa-sparkle text-amber-500 mr-1"></i> Koleksi Premium</span>
+            </div>
+            <h2 class="text-3xl font-black text-gray-800 tracking-tight">Produk <span class="bg-gradient-to-r from-indigo-600 to-indigo-400 bg-clip-text text-transparent">Pilihan</span> <i class="fas fa-fire text-orange-500 ml-1 align-middle"></i></h2>
+            <p class="text-gray-500 mt-1 text-sm">Sentuhan elegan, kualitas terbaik</p>
+        </div>
         
-        <div id="product-list" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <p class="text-gray-500">Sedang memuat data produk...</p>
+        <div id="product-list" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-7"></div>
+
+        <div class="mt-20 bg-white/80 backdrop-blur-sm p-6 rounded-3xl shadow-xl border border-white/50">
+            <div class="flex items-center gap-3 border-b border-indigo-100 pb-3 mb-5">
+                <i class="fas fa-receipt text-indigo-600 text-2xl"></i>
+                <h2 class="text-xl font-extrabold text-indigo-800">Riwayat Pesanan Anda</h2>
+                <span class="bg-indigo-100 text-indigo-700 text-xs px-3 py-1 rounded-full ml-auto">✨ Eksklusif</span>
+            </div>
+            <div id="history-list" class="space-y-4"></div>
         </div>
     </main>
-    <section class="container mx-auto mt-8 mb-12 p-4 border-t-2 border-gray-200">
-        <h2 class="text-xl font-bold mb-6 border-b-2 border-green-600 pb-2 inline-block">Form Checkout</h2>
+
+    <script>
+        // 1. DATA PRODUK (Gambar diubah ke format lokal: images/namafile.jpg)
+        let products = [
+            { id: 1, name: "kaos hitam", price: 350000, originalPrice: 500000, discount: 30, image: "images/kaos.jpg", category: "sepatu" },
+            { id: 2, name: "Jaket kulit Anti Air", price: 450000, originalPrice: 600000, discount: 25, image: "images/jaket.jpg", category: "jaket" },
+            { id: 3, name: "Kemeja Flanel Pria", price: 180000, originalPrice: 250000, discount: 28, image: "images/kemeja.jpg", category: "kemeja" },
+            { id: 4, name: "sweeter cream", price: 520000, originalPrice: 800000, discount: 35, image: "images/sweeter.jpg", category: "tas" },
+            { id: 5, name: "celana jeans pria", price: 275000, originalPrice: 400000, discount: 31, image: "images/celana.jpg", category: "jam" },
+            { id: 6, name: "sepatu", price: 125000, originalPrice: 200000, discount: 37, image: "images/sepatu.jpg", category: "aksesoris" },
+            { id: 7, name: "Topi", price: 99000, originalPrice: 150000, discount: 34, image: "images/topi.jpg", category: "topi" }
+        ];
+
+        let cart = JSON.parse(localStorage.getItem('cart_uts')) || [];
+        let currentUser = localStorage.getItem('session_uts') || null; // Menghapus JSON.parse karena session berupa string biasa
+        let orders = JSON.parse(localStorage.getItem('history_uts')) || [];
+
+        function updateCartCount() {
+            let totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            let cartCountElem = document.getElementById('cart-count');
+            if (cartCountElem) cartCountElem.innerText = totalItems;
+        }
+
+        function saveCart() {
+            localStorage.setItem('cart_uts', JSON.stringify(cart));
+            updateCartCount();
+        }
+
+        function renderProducts(productsToRender) {
+            const productContainer = document.getElementById('product-list');
+            if (!productContainer) return;
+            if (productsToRender.length === 0) {
+                productContainer.innerHTML = '<div class="col-span-full text-center py-12 bg-white/60 rounded-2xl"><i class="fas fa-box-open text-4xl text-indigo-300 mb-2"></i><p class="text-gray-500">Produk tidak ditemukan</p></div>';
+                return;
+            }
+            productContainer.innerHTML = productsToRender.map((product, idx) => {
+                const discountPercent = product.discount ? `<div class="discount-badge"><i class="fas fa-tag mr-1"></i> ${product.discount}%</div>` : '';
+                const originalPriceHtml = product.originalPrice ? `<span class="price-original">Rp${product.originalPrice.toLocaleString()}</span>` : '';
+                return `
+                    <div class="product-card group" style="--delay: ${idx % 5}" data-id="${product.id}">
+                        ${discountPercent}
+                        <div class="relative overflow-hidden">
+                            <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover transition duration-500 group-hover:scale-105">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition duration-300"></div>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="font-bold text-lg text-gray-800 mb-1 line-clamp-1">${product.name}</h3>
+                            <div class="flex items-baseline gap-2 flex-wrap mb-3">
+                                ${originalPriceHtml}
+                                <span class="price-special">Rp${product.price.toLocaleString()}</span>
+                            </div>
+                            <button onclick="tambahKeKeranjang(${product.id})" class="btn-cart-luxury w-full text-white font-semibold py-2.5 rounded-xl flex items-center justify-center gap-2 transition">
+                                <i class="fas fa-cart-plus"></i> Tambah
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function cariProduk() {
+            const keyword = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = products.filter(p => p.name.toLowerCase().includes(keyword));
+            renderProducts(filtered);
+        }
+
+        window.tambahKeKeranjang = function(productId) {
+            // PERBAIKAN: Cek apakah user sudah login atau belum
+            if (!currentUser) {
+                alert("Harap login terlebih dahulu untuk berbelanja!");
+                window.location.href = 'login.html'; // Lempar ke halaman login
+                return; // Hentikan proses tambah ke keranjang
+            }
+
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            const existingItem = cart.find(item => item.id === productId);
+            if (existingItem) {
+                existingItem.qty += 1;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+            saveCart();
+            alert(`✅ ${product.name} ditambahkan ke keranjang!`);
+        };
+
+        function renderHistory() {
+            const historyContainer = document.getElementById('history-list');
+            if (!historyContainer) return;
+            if (!currentUser) {
+                historyContainer.innerHTML = `<div class="bg-gray-50 rounded-xl p-6 text-center text-gray-500"><i class="fas fa-lock mr-2"></i> Login untuk melihat riwayat pesanan Anda.</div>`;
+                return;
+            }
+            // Asumsi: Saat checkout di cart.html, kamu menyimpan email user di dalam object order (contoh: order.user)
+            const userOrders = orders.filter(order => order.user === currentUser);
+            if (userOrders.length === 0) {
+                historyContainer.innerHTML = `<div class="bg-indigo-50/50 rounded-xl p-6 text-center text-gray-500"><i class="fas fa-history"></i> Belum ada pesanan. Yuk belanja!</div>`;
+                return;
+            }
+            historyContainer.innerHTML = userOrders.map(order => `
+                <div class="history-card p-4 bg-white rounded-2xl shadow-sm flex flex-wrap justify-between items-center gap-3">
+                    <div class="flex items-center gap-4">
+                        <i class="fas fa-check-circle text-green-500 text-xl"></i>
+                        <div>
+                            <p class="font-bold text-gray-800">${order.id || order.tanggal}</p>
+                            <p class="text-sm text-gray-500">Penerima: ${order.nama}</p>
+                        </div>
+                    </div>
+                    <div class="font-extrabold text-indigo-700">${order.total}</div>
+                </div>
+            `).join('');
+        }
+
+        window.logout = function() {
+            localStorage.removeItem('session_uts');
+            currentUser = null;
+            updateUserUI();
+            renderHistory();
+            alert("Anda telah logout.");
+        };
+
+        function updateUserUI() {
+            const btnLogin = document.getElementById('btnLogin');
+            const btnLogout = document.getElementById('btnLogout');
+            const userGreetingSpan = document.getElementById('userGreeting');
+            const greetingTextSpan = document.getElementById('greetingText');
+            if (currentUser) {
+                if (btnLogin) btnLogin.classList.add('hidden');
+                if (btnLogout) btnLogout.classList.remove('hidden');
+                if (userGreetingSpan) {
+                    userGreetingSpan.classList.remove('hidden');
+                    userGreetingSpan.classList.add('flex');
+                    // Mengambil nama depan dari email untuk sapaan
+                    if(greetingTextSpan) greetingTextSpan.innerText = `Halo, ${currentUser.split('@')[0]}`;
+                }
+            } else {
+                if (btnLogin) btnLogin.classList.remove('hidden');
+                if (btnLogout) btnLogout.classList.add('hidden');
+                if (userGreetingSpan) userGreetingSpan.classList.add('hidden');
+            }
+        }
         
-        <div class="bg-white p-6 rounded-lg shadow-md max-w-lg border border-gray-100">
-            <p class="text-gray-600 mb-4 text-sm">Isi data pengiriman untuk menyelesaikan pesanan:</p>
-            
-            <input type="text" id="nama" placeholder="Nama Lengkap" class="w-full mb-4 p-3 border rounded focus:outline-none focus:border-green-500 bg-gray-50">
-            <input type="number" id="nohp" placeholder="No. Handphone" class="w-full mb-4 p-3 border rounded focus:outline-none focus:border-green-500 bg-gray-50">
-            <textarea id="alamat" placeholder="Alamat Pengiriman Lengkap" class="w-full mb-4 p-3 border rounded h-24 focus:outline-none focus:border-green-500 bg-gray-50"></textarea>
-            
-            <button onclick="prosesCheckout()" class="w-full bg-green-600 text-white font-bold py-3 px-4 rounded hover:bg-green-700 transition shadow-lg">
-                Selesaikan Pesanan
-            </button>
-        </div>
-    </section>
-<script src="script.js"></script>
-</body>
-</html>
+        function loadProductsAndHistory() {
+            renderProducts(products);
+            renderHistory();
+            updateCartCount();
+            updateUserUI();
+        }
+
+        window.addEventListener('storage', () => {
+            cart = JSON.parse(localStorage.getItem('cart_uts')) || [];
+            currentUser = localStorage.getItem('session_uts') || null;
+            orders = JSON.parse(localStorage.getItem('history_uts')) || [];
+            updateCartCount();
+            updateUserUI();
+            renderHistory();
+            renderProducts(products);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProductsAndHistory();
+        });
+    </script>
 </body>
 </html>
