@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Toko Mantap</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Inter', sans-serif; } </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <nav class="bg-indigo-700 text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold tracking-wide">🛒 Toko<span class="text-indigo-300">Mantap</span></a>
+        </div>
+    </nav>
+
+    <main id="checkout-page" class="container mx-auto px-4 mt-8 max-w-2xl mb-12">
+        <a href="cart.html" class="text-indigo-600 hover:underline font-semibold mb-4 inline-block">&larr; Kembali ke Keranjang</a>
+        
+        <div class="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
+            <h2 class="text-2xl font-bold mb-6 text-indigo-700 border-b pb-4">Formulir Pengiriman</h2>
+            
+            <div class="bg-amber-50 p-4 rounded-lg mb-6 border border-amber-200">
+                <p class="text-sm text-gray-600">Total yang harus dibayar:</p>
+                <p id="checkout-total-display" class="text-2xl font-bold text-amber-600">Rp 0</p>
+            </div>
+
+            <input type="text" id="nama" placeholder="Nama Lengkap Penerima" class="w-full mb-4 p-4 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none">
+            <input type="number" id="nohp" placeholder="Nomor Handphone Aktif" class="w-full mb-4 p-4 bg-gray-50 border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none">
+            <textarea id="alamat" placeholder="Alamat Pengiriman Lengkap (RT/RW, Desa, Kec, Kota)" class="w-full mb-8 p-4 bg-gray-50 border rounded-xl h-32 focus:ring-2 focus:ring-indigo-500 outline-none"></textarea>
+            
+            <button onclick="prosesCheckoutFinal()" class="w-full bg-green-500 text-white font-bold py-4 rounded-xl hover:bg-green-600 transition shadow-lg text-lg">
+                Konfirmasi & Buat Pesanan
+            </button>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
