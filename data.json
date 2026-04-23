@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "name": "Kaos Sablon DTF Custom",
+    "price": 85000,
+    "image": "https://via.placeholder.com/300x200?text=Kaos+DTF",
+    "description": "Kaos bahan katun dengan sablon DTF desain bebas sesuai keinginan."
+  },
+  {
+    "id": 2,
+    "name": "Kabel Rem Depan Astrea Legenda",
+    "price": 35000,
+    "image": "https://via.placeholder.com/300x200?text=Kabel+Rem",
+    "description": "Kabel rem dengan kualitas terjamin untuk motor kesayangan."
+  },
+  {
+    "id": 3,
+    "name": "Jaket Hoodie Polos",
+    "price": 120000,
+    "image": "https://via.placeholder.com/300x200?text=Hoodie",
+    "description": "Hoodie tebal yang sangat cocok untuk dijadikan media sablon."
+  }
+]

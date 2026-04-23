@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Shop Saya</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+    <header class="bg-blue-600 text-white p-4 shadow-md sticky top-0">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold tracking-wider">Toko Mantap</h1>
+            <div class="flex gap-4">
+                <button class="bg-blue-800 px-4 py-2 rounded hover:bg-blue-700">Login</button>
+                <button class="bg-orange-500 px-4 py-2 rounded hover:bg-orange-400 font-bold">
+                    Keranjang (<span id="cart-count">0</span>)
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto mt-8 p-4">
+        <h2 class="text-xl font-bold mb-6 border-b-2 border-blue-600 pb-2 inline-block">Produk Terbaru</h2>
+        
+        <div id="product-list" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <p class="text-gray-500">Sedang memuat data produk...</p>
+        </div>
+    </main>
+    <section class="container mx-auto mt-8 mb-12 p-4 border-t-2 border-gray-200">
+        <h2 class="text-xl font-bold mb-6 border-b-2 border-green-600 pb-2 inline-block">Form Checkout</h2>
+        
+        <div class="bg-white p-6 rounded-lg shadow-md max-w-lg border border-gray-100">
+            <p class="text-gray-600 mb-4 text-sm">Isi data pengiriman untuk menyelesaikan pesanan:</p>
+            
+            <input type="text" id="nama" placeholder="Nama Lengkap" class="w-full mb-4 p-3 border rounded focus:outline-none focus:border-green-500 bg-gray-50">
+            <input type="number" id="nohp" placeholder="No. Handphone" class="w-full mb-4 p-3 border rounded focus:outline-none focus:border-green-500 bg-gray-50">
+            <textarea id="alamat" placeholder="Alamat Pengiriman Lengkap" class="w-full mb-4 p-3 border rounded h-24 focus:outline-none focus:border-green-500 bg-gray-50"></textarea>
+            
+            <button onclick="prosesCheckout()" class="w-full bg-green-600 text-white font-bold py-3 px-4 rounded hover:bg-green-700 transition shadow-lg">
+                Selesaikan Pesanan
+            </button>
+        </div>
+    </section>
+<script src="script.js"></script>
+</body>
+</html>
+</body>
+</html>
